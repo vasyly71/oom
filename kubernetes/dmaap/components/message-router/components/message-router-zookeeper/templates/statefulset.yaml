@@ -54,6 +54,17 @@ spec:
       imagePullSecrets:
       - name: "{{ include "common.namespace" . }}-docker-registry-key"
       initContainers:
+      - name: {{ include "common.name" . }}-log-permission-fixer
+        command:
+        - sh
+        - -exec
+        - >
+          chown -R 1000:0 /tmp/zookeeper/apikeys;
+        image: {{ include "repositoryGenerator.image.busybox" . }}
+        imagePullPolicy: {{ .Values.global.pullPolicy | default .Values.pullPolicy }}
+        volumeMounts:
+        - mountPath: /tmp/zookeeper/apikeys
+          name: zookeeper-log
       - name: {{ include "common.name" . }}-permission-fixer
         command:
         - sh
@@ -183,6 +194,8 @@ spec:
           readOnly: true
         - mountPath: /var/lib/zookeeper/data
           name: zookeeper-data
+        - mountPath: /var/lib/zookeeper/log
+          name: zookeeper-log
         - name: jaas-config
           mountPath: /etc/zookeeper/secrets/jaas
       {{- if .Values.tolerations }}
@@ -211,10 +224,26 @@ spec:
 {{ if not .Values.persistence.enabled }}
       - name: zookeeper-data
         emptyDir: {}
+      - name: zookeeper-log
+        emptyDir: {}
 {{ else }}
   volumeClaimTemplates:
     - metadata:
         name: zookeeper-data
+        labels:
+          app: {{ include "common.fullname" . }}
+          chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+          release: "{{ include "common.release" . }}"
+          heritage: "{{ .Release.Service }}"
+      spec:
+        accessModes:
+          - {{ .Values.persistence.accessMode | quote }}
+        storageClassName: {{ include "common.storageClass" . }}
+        resources:
+          requests:
+            storage: {{ .Values.persistence.size | quote }}
+    - metadata:
+        name: zookeeper-log
         labels:
           app: {{ include "common.fullname" . }}
           chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"

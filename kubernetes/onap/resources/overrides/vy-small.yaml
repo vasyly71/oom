@@ -1,0 +1,436 @@
+# Copyright © 2019 Amdocs, Bell Canada
+# Copyright (c) 2020 Nordix Foundation, Modifications
+# Modifications Copyright © 2020-2021 Nokia
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#       http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+#################################################################
+# Global configuration overrides.
+#
+# These overrides will affect all helm charts (ie. applications)
+# that are listed below and are 'enabled'.
+#################################################################
+global:
+  # Change to an unused port prefix range to prevent port conflicts
+  # with other instances running within the same k8s cluster
+  nodePortPrefix: 302
+  nodePortPrefixExt: 304
+  masterPassword: password
+  portalFEPort: "9443"
+
+  # Install test components
+  # test components are out of the scope of ONAP but allow to have a entire
+  # environment to test the different features of ONAP
+  # Current tests environments provided:
+  #  - netbox (needed for CDS IPAM)
+  #  - AWX (needed for XXX)
+  #  - EJBCA Server (needed for CMPv2 tests)
+  # Today, "contrib" chart that hosting these components must also be enabled
+  # in order to make it work. So `contrib.enabled` must have the same value than
+  # addTestingComponents
+  addTestingComponents: &testing false
+
+  # ONAP Repository
+  # Four different repositories are used
+  # You can change individually these repositories to ones that will serve the
+  # right images. If credentials are needed for one of them, see below.
+  repository: nexus3.onap.org:10001
+  dockerHubRepository: &dockerHubRepository docker.io
+  elasticRepository: &elasticRepository docker.elastic.co
+  googleK8sRepository: k8s.gcr.io
+  githubContainerRegistry: ghcr.io
+
+  #/!\ DEPRECATED /!\
+  # Legacy repositories which will be removed at the end of migration.
+  # Please don't use
+  loggingRepository: *elasticRepository
+  busyboxRepository: *dockerHubRepository
+
+  # Default credentials
+  # they're optional. If the target repository doesn't need them, comment them
+  repositoryCred:
+    user: docker
+    password: docker
+  # If you want / need authentication on the repositories, please set
+  # Don't set them if the target repo is the same than others
+  # so id you've set repository to value `my.private.repo` and same for
+  # dockerHubRepository, you'll have to configure only repository (exclusive) OR
+  # dockerHubCred.
+  # dockerHubCred:
+  #   user: myuser
+  #   password: mypassord
+  # elasticCred:
+  #   user: myuser
+  #   password: mypassord
+  # googleK8sCred:
+  #   user: myuser
+  #   password: mypassord
+
+
+  # common global images
+  # Busybox for simple shell manipulation
+  busyboxImage: busybox:1.32
+
+  # curl image
+  curlImage: curlimages/curl:7.69.1
+
+  # env substitution image
+  envsubstImage: dibi/envsubst:1
+
+  # generate htpasswd files image
+  # there's only latest image for htpasswd
+  htpasswdImage: xmartlabs/htpasswd:latest
+
+  # kubenretes client image
+  kubectlImage: bitnami/kubectl:1.19
+
+  # logging agent
+  loggingImage: beats/filebeat:5.5.0
+
+  # mariadb client image
+  mariadbImage: bitnami/mariadb:10.5.8
+
+  # nginx server image
+  nginxImage: bitnami/nginx:1.18-debian-10
+
+  # postgreSQL client and server image
+  postgresImage: crunchydata/crunchy-postgres:centos8-13.2-4.6.1
+
+  # readiness check image
+  readinessImage: onap/oom/readiness:3.0.1
+
+  # image pull policy
+  pullPolicy: Always
+
+  # default java image
+  jreImage: onap/integration-java11:7.2.0
+
+  # default clusterName
+  # {{ template "common.fullname" . }}.{{ template "common.namespace" . }}.svc.{{ .Values.global.clusterName }}
+  clusterName: cluster.local
+
+  # default mount path root directory referenced
+  # by persistent volumes and log files
+  persistence:
+    mountPath: /dockerdata-nfs
+    # enableDefaultStorageclass: false
+    # parameters: {}
+    # storageclassProvisioner: kubernetes.io/no-provisioner
+    volumeReclaimPolicy: Retain
+
+  # override default resource limit flavor for all charts
+  flavor: unlimited
+
+  # flag to enable debugging - application support required
+  debugEnabled: false
+
+  # default password complexity
+  # available options: phrase, name, pin, basic, short, medium, long, maximum security
+  # More datails: https://masterpassword.app/masterpassword-algorithm.pdf
+  passwordStrength: long
+
+  # configuration to set log level to all components (the one that are using
+  # "common.log.level" to set this)
+  # can be overrided per components by setting logConfiguration.logLevelOverride
+  # to the desired value
+  # logLevel: DEBUG
+
+  # Global ingress configuration
+  ingress:
+    enabled: true
+    virtualhost:
+      baseurl: "simpledemo.onap.org"
+
+  # Global Service Mesh configuration
+  # POC Mode, don't use it in production
+  serviceMesh:
+    enabled: false
+    tls: true
+
+  # metrics part
+  # If enabled, exporters (for prometheus) will be deployed
+  # if custom resources set to yes, CRD from prometheus operartor will be
+  # created
+  # Not all components have it enabled.
+  #
+  metrics:
+    enabled: true
+    custom_resources: false
+
+  # Disabling AAF
+  # POC Mode, only for use in development environment
+  # Keep it enabled in production
+  aafEnabled: true
+  aafAgentImage: onap/aaf/aaf_agent:2.1.20
+
+  # Disabling MSB
+  # POC Mode, only for use in development environment
+  msbEnabled: true
+
+  # default values for certificates
+  certificate:
+    default:
+      renewBefore: 720h #30 days
+      duration:    8760h #365 days
+      subject:
+        organization: "Linux-Foundation"
+        country: "US"
+        locality: "San-Francisco"
+        province: "California"
+        organizationalUnit: "ONAP"
+      issuer:
+        group: certmanager.onap.org
+        kind: CMPv2Issuer
+        name: cmpv2-issuer-onap
+
+  # Enabling CMPv2
+  cmpv2Enabled: true
+  platform:
+    certificates:
+      clientSecretName: oom-cert-service-client-tls-secret
+      keystoreKeyRef: keystore.jks
+      truststoreKeyRef: truststore.jks
+      keystorePasswordSecretName: oom-cert-service-certificates-password
+      keystorePasswordSecretKey: password
+      truststorePasswordSecretName: oom-cert-service-certificates-password
+      truststorePasswordSecretKey: password
+
+  # Indicates offline deployment build
+  # Set to true if you are rendering helm charts for offline deployment
+  # Otherwise keep it disabled
+  offlineDeploymentBuild: false
+
+  # TLS
+  # Set to false if you want to disable TLS for NodePorts. Be aware that this
+  # will loosen your security.
+  # if set this element will force or not tls even if serviceMesh.tls is set.
+  # tlsEnabled: false
+
+  # Logging
+  # Currently, centralized logging is not in best shape so it's disabled by
+  # default
+  centralizedLoggingEnabled: &centralizedLogging false
+
+  # Example of specific for the components where you want to disable TLS only for
+  # it:
+  # if set this element will force or not tls even if global.serviceMesh.tls and
+  # global.tlsEnabled is set otherwise.
+  # robot:
+  #   tlsOverride: false
+
+  # Global storage configuration
+  #    Set to "-" for default, or with the name of the storage class
+  #    Please note that if you use AAF, CDS, SDC, Netbox or Robot, you need a
+  #    storageclass with RWX capabilities (or set specific configuration for these
+  #    components).
+  persistence:
+    storageClass: "gp2"
+
+# Example of specific for the components which requires RWX:
+# aaf:
+#   persistence:
+#     storageClassOverride: "My_RWX_Storage_Class"
+# contrib:
+#   netbox:
+#     netbox-app:
+#       persistence:
+#         storageClassOverride: "My_RWX_Storage_Class"
+# cds:
+#   cds-blueprints-processor:
+#     persistence:
+#       storageClassOverride: "My_RWX_Storage_Class"
+# sdc:
+#   sdc-onboarding-be:
+#     persistence:
+#       storageClassOverride: "My_RWX_Storage_Class"
+
+#################################################################
+# Enable/disable and configure helm charts (ie. applications)
+# to customize the ONAP deployment.
+#################################################################
+aaf:
+  enabled: true
+aai:
+  enabled: false
+appc:
+  enabled: false
+  config:
+    openStackType: OpenStackProvider
+    openStackName: OpenStack
+    openStackKeyStoneUrl: http://localhost:8181/apidoc/explorer/index.html
+    openStackServiceTenantName: default
+    openStackDomain: default
+    openStackUserName: admin
+    openStackEncryptedPassword: admin
+cassandra:
+  enabled: true
+  replicaCount: 3
+  config:
+    cluster_domain: cluster.local
+    heap:
+      max: 1G
+      min: 256M
+  liveness:
+    initialDelaySeconds: 60
+    periodSeconds: 20
+    timeoutSeconds: 10
+    successThreshold: 1
+    failureThreshold: 3
+    # necessary to disable liveness probe when setting breakpoints
+    # in debugger so K8s doesn't restart unresponsive container
+    enabled: true
+ 
+  readiness:
+    initialDelaySeconds: 120
+    periodSeconds: 20
+    timeoutSeconds: 10
+    successThreshold: 1
+    failureThreshold: 3
+  
+cds:
+  enabled: false
+clamp:
+  enabled: false
+cli:
+  enabled: false
+consul:
+  enabled: false
+# Today, "contrib" chart that hosting these components must also be enabled
+# in order to make it work. So `contrib.enabled` must have the same value than
+# addTestingComponents
+contrib:
+  enabled: *testing
+cps:
+  enabled: false
+dcaegen2:
+  enabled: false
+dcaegen2-services:
+  enabled: false
+dcaemod:
+  enabled: false
+holmes:
+  enabled: false
+dmaap:
+  enabled: true
+# Today, "logging" chart that perform the central part of logging must also be
+# enabled in order to make it work. So `logging.enabled` must have the same
+# value than centralizedLoggingEnabled
+log:
+  enabled: *centralizedLogging
+sniro-emulator:
+  enabled: false
+oof:
+  enabled: false
+mariadb-galera:
+  enabled: true
+msb:
+  enabled: false
+multicloud:
+  enabled: false
+nbi:
+  enabled: false
+  config:
+    # openstack configuration
+    openStackRegion: "Yolo"
+    openStackVNFTenantId: "1234"
+policy:
+  enabled: false
+pomba:
+  enabled: false
+portal:
+  enabled: true
+  portal-mariadb:
+    config:
+      sdcFePort: "9443"
+robot:
+  enabled: false
+  config:
+    # openStackEncryptedPasswordHere should match the encrypted string used in SO and APPC and overridden per environment
+    openStackEncryptedPasswordHere: "c124921a3a0efbe579782cde8227681e"
+sdc:
+  enabled: true
+  config:
+    environment:
+      vnfRepoPort: 8703
+  sdc-be:
+    config:
+      javaOptions: "-Xmx1g -Xms512m"
+    liveness:
+      periodSeconds: 300
+      timeoutSeconds: 180
+    readiness:
+      periodSeconds: 300
+      timeoutSeconds: 240
+  sdc-fe:
+    resources:
+      small:
+        limits:
+          cpu: 1
+          memory: 2Gi
+        requests:
+          cpu: 100m
+          memory: 500Mi
+sdnc:
+  enabled: false
+
+  replicaCount: 1
+
+  mysql:
+    replicaCount: 1
+so:
+  enabled: false
+
+  replicaCount: 1
+
+  liveness:
+    # necessary to disable liveness probe when setting breakpoints
+    # in debugger so K8s doesn't restart unresponsive container
+    enabled: false
+
+  # so server configuration
+  config:
+    # message router configuration
+    dmaapTopic: "AUTO"
+    # openstack configuration
+    openStackUserName: "vnf_user"
+    openStackRegion: "RegionOne"
+    openStackKeyStoneUrl: "http://1.2.3.4:5000"
+    openStackServiceTenantName: "service"
+    openStackEncryptedPasswordHere: "c124921a3a0efbe579782cde8227681e"
+
+  # in order to enable static password for so-monitoring uncomment:
+  # so-monitoring:
+  #   server:
+  #     monitoring:
+  #       password: demo123456!
+uui:
+  enabled: false
+vfc:
+  enabled: false
+vid:
+  enabled: false
+vnfsdk:
+  enabled: false
+modeling:
+  enabled: false
+platform:
+  enabled: false
+a1policymanagement:
+  enabled: false
+
+cert-wrapper:
+  enabled: true
+repository-wrapper:
+  enabled: true
+roles-wrapper:
+  enabled: true

@@ -1,0 +1,8 @@
+apiVersion: v1
+data:
+  login: YWFmX2FkbWluQHBlb3BsZS5vc2FhZi5vcmc=
+  password: ZGVtbzEyMzQ1NiE=
+kind: Secret
+metadata:
+  name: onap-cps-core-app-user-creds
+  namespace: onap
