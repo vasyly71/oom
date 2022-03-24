@@ -354,7 +354,7 @@ portal:
     config:
       sdcFePort: "9443"
 postgres:
-  enabled: true
+  enabled: true      
 robot:
   enabled: false
   config:
@@ -391,8 +391,7 @@ sdnc:
   mysql:
     replicaCount: 1
 so:
-  enabled: false
-
+  enabled: true
   replicaCount: 1
 
   liveness:

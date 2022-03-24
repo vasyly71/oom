@@ -261,7 +261,7 @@ global:
 aaf:
   enabled: true
 aai:
-  enabled: false
+  enabled: true
 appc:
   enabled: false
   config:
@@ -353,8 +353,6 @@ portal:
   portal-mariadb:
     config:
       sdcFePort: "9443"
-postgres:
-  enabled: true
 robot:
   enabled: false
   config:
@@ -384,15 +382,12 @@ sdc:
           cpu: 100m
           memory: 500Mi
 sdnc:
-  enabled: false
-
+  enabled: true
   replicaCount: 1
-
   mysql:
     replicaCount: 1
 so:
-  enabled: false
-
+  enabled: true
   replicaCount: 1
 
   liveness:
@@ -427,10 +422,11 @@ vnfsdk:
 modeling:
   enabled: false
 platform:
-  enabled: false
+  enabled: true
+postgres:
+  enabled: true
 a1policymanagement:
   enabled: false
-
 cert-wrapper:
   enabled: true
 repository-wrapper:
