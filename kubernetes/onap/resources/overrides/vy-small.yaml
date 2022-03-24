@@ -333,6 +333,7 @@ oof:
   enabled: false
 mariadb-galera:
   enabled: true
+  replicaCount: 1
 msb:
   enabled: false
 multicloud:
