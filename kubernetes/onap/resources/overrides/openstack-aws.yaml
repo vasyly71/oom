@@ -1,0 +1,68 @@
+# Copyright © 2019 Amdocs, Bell Canada
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#       http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+#################################################################
+# This override file configures openstack parameters for ONAP
+#################################################################
+appc:
+  config:
+    enableClustering: false
+    openStackType: "OpenStackProvider"
+    openStackName: "OpenStack"
+    openStackKeyStoneUrl: "http://10.143.56.14:5000/v3"
+    openStackServiceTenantName: "default"
+    openStackDomain: "default"
+    openStackUserName: "admin"
+    openStackEncryptedPassword: "3C9E79F28610E77396AEFD1F7DD458403532FEE314763ADFDD6BAC6E13C0D8FA23396E3DF2AD2B6CCD0207C39DB132B731AA872D0AA4719195D9BB279214526B10"
+robot:
+  appcUsername: "appc@appc.onap.org"
+  appcPassword: "demo123456!"
+  openStackKeyStoneUrl: "http://10.143.56.14:5000"
+  openStackKeystoneAPIVersion: "v3"
+  openStackTenantId: "d6dda2bbfd7b439b909a557a1d59ecf6"
+  openStackUserName: "admin"
+  openStackRegion: "RegionOne"
+  openStackPublicNetId: "c13c93f6-67e6-4d47-98f3-b075a68ac60f"
+  openStackPublicNetworkName: "public"
+  ubuntu14Image: "trusty"
+  ubuntu16Image: "xenial"
+  openStackPrivateNetId: "OAM_NETWORK"
+  openStackPrivateSubnetId: "OAM_SUBNET"
+  openStackPrivateNetCidr: "10.10.10.0/24"
+  openStackSecurityGroup: "default"
+  openStackOamNetworkCidrPrefix: "10.10.10"
+  dcaeCollectorIp: "10.142.15.193"
+  vnfPubKey: "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDqXaTZf6eQw55I2LOnpXbC8JEw536thBD5QOWKwPsgy0CUojL9+PpLS7x949SXxoF9jrtQ1n67pnHeWXrOFXzrpWNIgmZMrV8KOpteC/0yAvTSY585fMpMz1Q3xrlSk8BIk+LUbyXmSNwNeLTJb3s+iJ28ySgKE99IOisdjPLPtRi3zLhrRw+xg7UjRQTys46jqy/+txoXUIJRwYQx6kusBmiZIpIVbXBnFErwlydNUj9KfPdiGICMUXqOeF1+iacCGMCsVSuRPR74OJAi4CXrHOL+zJcyidIwqz2H7V6ra8MVq6vT+jp/NyOrgJJbgZiQpuNpxWbJ0lXxOgDX1eXf"
+  demoArtifactsVersion: "1.6.0-SNAPSHOT"
+  demoArtifactsRepoUrl: "https://nexus.onap.org/content/repositories/releases"
+  scriptVersion: "1.6.0-SNAPSHOT"
+  rancherIpAddress: "10.142.15.193"
+  openStackRegion: "RegionOne"
+  openStackProjectName: "admin"
+  config:
+    # openStackEncryptedPasswordHere should match the encrypted string used in SO and APPC and overridden per environment
+    openStackEncryptedPasswordHere: "f093be6355ad39881e6530e0d4160a8c58b11dff0c4f2aba7a7febf43989eb862773c1ad24280d1c4517b249a6347eb4"
+    openStackSoEncryptedPassword: "3C9E79F28610E77396AEFD1F7DD458403532FEE314763ADFDD6BAC6E13C0D8FA23396E3DF2AD2B6CCD0207C39DB132B731AA872D0AA4719195D9BB279214526B10"
+so:
+  # so server configuration
+  so-catalog-db-adapter:
+    config:
+      openStackUserName: "admin"
+      openStackKeyStoneUrl: "http://10.143.56.14:5000/v3"
+      openStackEncryptedPasswordHere: "3C9E79F28610E77396AEFD1F7DD458403532FEE314763ADFDD6BAC6E13C0D8FA23396E3DF2AD2B6CCD0207C39DB132B731AA872D0AA4719195D9BB279214526B10"
+nbi:
+  config:
+    # openstack configuration
+    openStackRegion: "RegionOne"
+    openStackVNFTenantId: "d6dda2bbfd7b439b909a557a1d59ecf6"

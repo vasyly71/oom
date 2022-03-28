@@ -43,10 +43,17 @@ aaf:
   enabled: true
 aai:
   enabled: true
+  aai-graphadmin:
+    persistence:
+      storageClassOverride: "efs-sc"
 appc:
   enabled: false
 cds:
   enabled: true
+  cds-blueprints-processor:
+    persistence:
+      storageClassOverride: "efs-sc"
+  
 clamp:
   enabled: true
 cli:
@@ -55,7 +62,14 @@ cli:
 # in order to make it work. So `contrib.enabled` must have the same value than
 # addTestingComponents
 contrib:
-  enabled: false
+  enabled: true
+  netbox:
+    netbox-app:
+      persistence:
+        storageClassOverride: "efs-sc"
+    netbox-nginx:
+      persistence:
+        storageClassOverride: "efs-sc"
 consul:
   enabled: true
 cps:
@@ -66,6 +80,10 @@ dcaegen2-services:
   enabled: true
 dcaemod:
   enabled: true
+  dcaemod-genprocessor:
+    persistence:
+      storageClassOverride: "efs-sc"
+  
 holmes:
   enabled: true
 dmaap:
