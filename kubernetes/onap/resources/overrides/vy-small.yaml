@@ -45,7 +45,7 @@ global:
   # You can change individually these repositories to ones that will serve the
   # right images. If credentials are needed for one of them, see below.
   repository: nexus3.onap.org:10001
-  dockerHubRepository: &dockerHubRepository docker.io
+  dockerHubRepository: docker.sigma-systems.com
   elasticRepository: &elasticRepository docker.elastic.co
   googleK8sRepository: k8s.gcr.io
   githubContainerRegistry: ghcr.io
@@ -66,9 +66,12 @@ global:
   # so id you've set repository to value `my.private.repo` and same for
   # dockerHubRepository, you'll have to configure only repository (exclusive) OR
   # dockerHubCred.
-  # dockerHubCred:
-  #   user: myuser
-  #   password: mypassord
+  dockerHubRepositoryCred:
+    user: vasyly71
+    password: 8db1e299-9f89-428b-8e58-b9874559793a
+  dockerHubCred:
+    user: vasyly71
+    password: 8db1e299-9f89-428b-8e58-b9874559793a
   # elasticCred:
   #   user: myuser
   #   password: mypassord

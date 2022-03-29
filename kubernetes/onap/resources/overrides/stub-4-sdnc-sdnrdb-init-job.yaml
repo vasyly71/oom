@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: stub-4-sdnc-sdnrdb-init-job
+  namespace: onap
+  labels:
+    app: stub-4-sdnc-sdnrdb-init-job
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: stub-4-sdnc-sdnrdb-init-job
+  template:
+    metadata:
+      labels:
+        app: stub-4-sdnc-sdnrdb-init-job
+    spec:
+      containers:
+        - name: sdnc-sdnrdb-init-job
+          image: docker.sigma-systems.com/alpine:3.15.2
+          command: ["sh", "-c", "tail -f /dev/null"]

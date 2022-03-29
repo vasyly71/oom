@@ -23,6 +23,19 @@ global:
   centralizedLoggingEnabled: &centralizedLogging false
   masterPassword: password
   portalFEPort: "9443"
+
+  # image pull policy
+  pullPolicy: IfNotPresent
+  
+  busyboxRepository: docker.sigma-systems.com
+  dockerHubRepository: docker.sigma-systems.com 
+
+#  dockerHubRepositoryCred:
+#    user: vasyly71
+#    password: 8db1e299-9f89-428b-8e58-b9874559793a
+#  dockerHubCred:
+#    user: vasyly71
+#    password: 8db1e299-9f89-428b-8e58-b9874559793a
   
   ingress:
     enabled: true
